@@ -1,0 +1,26 @@
+{
+  "name": "djs-game",
+  "version": "1.0.0",
+  "description": "A package that will help making discord.js bot's games easier.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yetity/djs-game.git"
+  },
+  "keywords": [
+    "discord.js",
+    "game"
+  ],
+  "author": "Yetity",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Yetity/djs-game/issues"
+  },
+  "homepage": "https://github.com/Yetity/djs-game#readme",
+  "dependencies": {
+    "discord.js": "^14.11.0"
+  }
+}
