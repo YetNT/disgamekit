@@ -66,6 +66,7 @@ class Game extends EventEmitter {
      * Handles button Interactions. can be placed beneath `game.start()`
      */
     handleButtons() {
+        if (this.var.gaming == false) return;
         if (!this.isGameOn()) {
             throw new Error("Cannot handle buttons before starting the game.");
         }
