@@ -1,8 +1,27 @@
 const EventEmitter = require("events");
+const { Client } = require("discord.js");
 
+/**
+ * Represents a game instance.
+ * @class
+ */
 class Game extends EventEmitter {
-    gaming = false; //game state
+    /**
+     * An object in which game variables can be stored
+     * @type {Object}
+     * @property {boolean} gaming Game's state. Changing this will be as if `#end()` was run without emitting `gameEnded`
+     */
+    var = {
+        gaming: false, //game state
+    };
     client;
+
+    /**
+     * Constructs a new Game instance.
+     * @constructor
+     * @param {Client} client A Discord.js client
+     * @param {string} id A unique game identifier
+     */
     constructor(client, id) {
         super();
         this.client = client;
@@ -13,7 +32,7 @@ class Game extends EventEmitter {
      * Start game
      */
     start() {
-        this.gaming = true;
+        this.var.gaming = true;
         this.emit("gameStarted");
     }
 
@@ -22,14 +41,14 @@ class Game extends EventEmitter {
      * @returns boolean
      */
     isGameOn() {
-        return this.gaming;
+        return this.var.gaming;
     }
 
     /**
      * Ends the game
      */
     end() {
-        this.gaming = false;
+        this.var.gaming = false;
         this.emit("gameEnded");
     }
 
@@ -53,12 +72,7 @@ class Game extends EventEmitter {
         this.client.on("interactionCreate", (interaction) => {
             if (!interaction.isButton()) return; // Check if the interaction is a button interaction
 
-            this.emit(`${this.id}-btn-${interaction.customId}`, {
-                // Emits "gameId-btn-customid", Since if you have multiple running all will be calling the same button, but with gameId instance it will only call one
-                id: interaction.customId,
-                user: interaction.user,
-                gameId: this.id,
-            });
+            this.emit(`${this.id}-btn`, interaction);
         });
     }
 }
