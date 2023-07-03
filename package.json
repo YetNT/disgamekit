@@ -1,26 +1,35 @@
 {
-  "name": "djs-game",
-  "version": "1.0.0",
-  "description": "A package that will help making discord.js bot's games easier.",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Yetity/djs-game.git"
-  },
-  "keywords": [
-    "discord.js",
-    "game"
-  ],
-  "author": "Yetity",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Yetity/djs-game/issues"
-  },
-  "homepage": "https://github.com/Yetity/djs-game#readme",
-  "dependencies": {
-    "discord.js": "^14.11.0"
-  }
+    "name": "djs-game",
+    "version": "1.0.0",
+    "description": "A package that will help making discord.js bot's games easier.",
+    "main": "src/index.js",
+    "types": "index.d.ts",
+    "scripts": {
+        "test": "mocha src/index.test.js",
+        "lint": "npx prettier --write ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Yetity/djs-game.git"
+    },
+    "keywords": [
+        "discord.js",
+        "game",
+        "djs-game"
+    ],
+    "author": "Yetity",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Yetity/djs-game/issues"
+    },
+    "homepage": "https://github.com/Yetity/djs-game#readme",
+    "dependencies": {
+        "discord.js": "^14.11.0"
+    },
+    "devDependencies": {
+        "dotenv": "^16.3.1",
+        "expect.js": "^0.3.1",
+        "mocha": "^10.2.0",
+        "prettier": "^2.8.8"
+    }
 }
