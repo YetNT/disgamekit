@@ -1,4 +1,4 @@
-const Game = require("./Game");
-const { PlaneObject, Plane } = require("./Plane");
+const Game = require('./class/Game');
+const { PlaneObject, Plane } = require('./class/Plane');
 
 module.exports = { Game, Plane, PlaneObject };

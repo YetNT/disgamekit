@@ -1,28 +1,19 @@
 const EventEmitter = require('events');
 const Game = require('./Game');
 
-/**
- * A 2d plane
- * @class
- */
 class Plane extends EventEmitter {
-    /**
-     *
-     * @param {Game} game Pass the game object
-     * @param {number} rows Amount of rows
-     * @param {number} columns Amount of columns
-     * @param {string} blank Replace blank space with something else.
-     */
+    blank;
+    plane;
     constructor(game, rows, columns, blank = null) {
         super();
         this.game = game;
         this.rows = rows;
         this.columns = columns;
-        this.plane = this.createGrid(blank);
+        this.plane = this.#createGrid(blank);
         this.blank = blank;
     }
 
-    createGrid(blank) {
+    #createGrid(blank) {
         /*
         Creates placeholder grid, 
         This grid alone without any of the other functions 
@@ -46,16 +37,6 @@ class Plane extends EventEmitter {
         objects: {},
     };
 
-    /**
-     *
-     * @param {number} x X coordinate
-     * @param {number} y Y coordinate
-     * @returns
-     */
-    coordsAt(x, y) {
-        return this.plane[this.#reverseYAxis(y)][x];
-    }
-
     #reverseYAxis(y) {
         /*
         Function that reverses the y input so that the grid's origin is at the bottom left.
@@ -73,11 +54,6 @@ class Plane extends EventEmitter {
         this.plane[this.#reverseYAxis(y)][x] = this.blank;
     }
 
-    /**
-     *
-     * @param {string} inputValue Lookup an objects id
-     * @returns {object} {x:?, y:?}
-     */
     lookupObj(inputValue) {
         for (const id in this.objects.objects) {
             const object = this.objects.objects[id];
@@ -118,7 +94,6 @@ class Plane extends EventEmitter {
         if (this.game.var.gaming == false) return;
         this.clear();
         for (const obj of arr) {
-            console.log(obj);
             if (obj.x < 0 || obj.y < 0) {
                 throw new RangeError(
                     'Invalid coordinates. x and y must be non-negative numbers. ([0, 0] is the bottom left corner.)'
