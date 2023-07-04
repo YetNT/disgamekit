@@ -15,20 +15,15 @@ declare class Game extends EventEmitter {
         gaming: boolean;
     };
     /**
-     * Discord.js Client Instance.
-     */
-    client: Client;
-    /**
      * Game's Unique Identifier
      */
     id: string;
 
     /**
      * Constructs a new Game instance.
-     * @param {Client} client A Discord.js client
      * @param {string} id A unique game identifier
      */
-    constructor(client: Client, id: string);
+    constructor(id: string);
 
     /**
      * Start's the game
@@ -43,19 +38,15 @@ declare class Game extends EventEmitter {
     /**
      * End's the game
      * @param {Interaction} interaction Pass the interaction that was associated with the game. If null it will not do anythinng to the message.
+     * @param {Plane} plane Pass the Plane to be cleared as the game ends.
      */
-    end(interaction?: Interaction): void;
+    end(interaction?: Interaction, plane?: Plane): void;
 
     /**
      * Forces the game to error and ends the game
      * @param {string} error Error message
      */
     error(error: string): void;
-
-    /**
-     * Handles button Interactions. can be placed beneath `game.start()`
-     */
-    handleButtons(): void;
 
     /**
      * Listens for when the game starts
@@ -69,13 +60,6 @@ declare class Game extends EventEmitter {
      * Listens for when an error occurs
      */
     on(event: 'error', listener: (error: TypeError) => void): this;
-    /**
-     * Listens for button interactions. ${string} is the button's ID
-     */
-    on(
-        event: `${string}-btn`,
-        listener: (interaction: Interaction) => void
-    ): this;
 }
 
 /**
@@ -160,13 +144,15 @@ declare class Plane extends EventEmitter {
 declare class PlaneObject {
     /**
      *
-     * @param {number} x X coordinate, origin is (0) (top left hand corner) [Not zero idnexed]
-     * @param {number} y Y coordinate, origin is (0) (top left hand corner) [Not zero indexed]
+     * @param {Plane} plane The plane instance that this wil be placed on.
+     * @param {number} x X coordinate origin, X axis origin is (0) (bottom left hand corner)
+     * @param {number} y Y coordinate origin, Y axis origin is (0) (bottom left hand corner)
      * @param {string} id A unique object ID
      * @param {string} value An emoji for said object to display on the plane. Defaults to objectID
      * @param {boolean} detectCollision Detect collision on other Objects.
      */
     constructor(
+        plane: Plane,
         x: number,
         y: number,
         id: string,
@@ -194,6 +180,17 @@ declare class PlaneObject {
      * Detect collision, if false, it will pass through existing PlaneObjects
      */
     detectCollision: boolean;
+
+    /**
+     * Emitted when a collision occurs with another object.
+     *
+     * @event PlaneObject#collision
+     * @param {PlaneObject | string} collidedObj - The collided object or a string representing the collision.
+     */
+    on(
+        event: 'collision',
+        listener: (collidedObj: PlaneObject | object) => void
+    ): this;
 }
 
 export { Game, Plane, PlaneObject };
