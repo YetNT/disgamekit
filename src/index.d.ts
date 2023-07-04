@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { Client, Interaction } from 'discord.js';
 
 /**
  * Represents a game instance.
@@ -37,7 +36,7 @@ declare class Game extends EventEmitter {
 
     /**
      * End's the game
-     * @param {Interaction} interaction Pass the interaction that was associated with the game. If null it will not do anythinng to the message.
+     * @param {Interaction} interaction Pass the interaction that was associated with the game. If null it will not do anythinng to the message. (Discord.js or Eris)
      * @param {Plane} plane Pass the Plane to be cleared as the game ends.
      */
     end(interaction?: Interaction, plane?: Plane): void;
