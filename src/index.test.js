@@ -2,17 +2,15 @@ const expect = require('expect.js');
 const { describe, it } = require('mocha');
 const { Game, Plane, PlaneObject } = require('./index');
 
-// Initialize the testing bot
-const client = 'djs client, for testing it wont be.';
 const testGameId = 'gameId';
 
 /**
  * @type {Game}
  */
-var game = new Game(client, testGameId);
+var game = new Game(testGameId);
 game.start();
 var plane = new Plane(game, 10, 10, 'empty');
-var bag = new PlaneObject(2, 6, 'bag');
+var bag = new PlaneObject(plane, 2, 6, 'bag');
 
 describe('Game', () => {
     it('should have a started game', () => {
