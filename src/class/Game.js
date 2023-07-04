@@ -1,15 +1,12 @@
 const EventEmitter = require('events');
-const { Interaction } = require('discord.js');
 
 class Game extends EventEmitter {
     var = {
         gaming: false, //game state
     };
-    client;
 
-    constructor(client, id) {
+    constructor(id) {
         super();
-        this.client = client;
         this.id = id;
     }
 
@@ -22,12 +19,15 @@ class Game extends EventEmitter {
         return this.var.gaming;
     }
 
-    end(interaction) {
+    end(interaction, plane) {
         this.var.gaming = false;
         if (interaction) {
             this.emit('end', interaction);
         } else {
             this.emit('end');
+        }
+        if (plane) {
+            plane.clear();
         }
     }
 
@@ -35,15 +35,6 @@ class Game extends EventEmitter {
         // forces an error with a msg and ends the game
         this.emit('error', new TypeError(error));
         this.end();
-    }
-
-    handleButtons() {
-        if (this.isGameOn()) {
-            this.client.on('interactionCreate', (interaction) => {
-                if (!interaction.isButton()) return; // Check if the interaction is a button interaction
-                this.emit(`${this.id}-btn`, interaction);
-            });
-        }
     }
 }
 
