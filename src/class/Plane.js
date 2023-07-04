@@ -4,6 +4,7 @@ const Game = require('./Game');
 class Plane extends EventEmitter {
     blank;
     plane;
+    #once = false;
     constructor(game, rows, columns, blank = null) {
         super();
         this.game = game;
@@ -11,6 +12,15 @@ class Plane extends EventEmitter {
         this.columns = columns;
         this.plane = this.#createGrid(blank);
         this.blank = blank;
+    }
+
+    #doOnce(func) {
+        if (this.#once) {
+            return;
+        } else {
+            func();
+            this.#once = true;
+        }
     }
 
     #createGrid(blank) {
@@ -54,6 +64,13 @@ class Plane extends EventEmitter {
         this.plane[this.#reverseYAxis(y)][x] = this.blank;
     }
 
+    #searchValue(objects, searchValue) {
+        const foundEntry = Object.entries(objects).find(
+            ([key, obj]) => obj.value === searchValue
+        );
+        return foundEntry ? foundEntry[1].id : null;
+    }
+
     lookupObj(inputValue) {
         for (const id in this.objects.objects) {
             const object = this.objects.objects[id];
@@ -91,29 +108,36 @@ class Plane extends EventEmitter {
      * @param  {...PlaneObject} arr Objects to be updated on plane
      */
     update(...arr) {
-        if (this.game.var.gaming == false) return;
-        this.clear();
-        for (const obj of arr) {
-            if (obj.x < 0 || obj.y < 0) {
-                throw new RangeError(
-                    'Invalid coordinates. x and y must be non-negative numbers. ([0, 0] is the bottom left corner.)'
-                );
-            }
+        const planeObjects = Object.values(this.objects.objects);
 
-            for (const existingObj of Object.values(this.objects.objects)) {
+        this.clear();
+        if (this.game.var.gaming == false && planeObjects.length != 0) {
+            // If there are objects on the plane and the game has ended, send them to their origins.
+            for (const obj of planeObjects) {
+                this.#add(obj.origin.x, obj.origin.y, obj);
+            }
+            return;
+        } else if (this.game.var.gaming == false) {
+            return;
+        }
+
+        for (const obj of arr) {
+            console.log(`x: ${obj.x}\ny: ${obj.y}`);
+
+            for (const existingObj of planeObjects) {
                 if (
                     existingObj.x === obj.x &&
                     existingObj.y === obj.y &&
                     existingObj.id !== obj.id
                 ) {
                     // Collision detected
-                    if (!obj.detectCollision) {
-                        throw new Error(
-                            'Collision detected. Cannot add object at the same coordinates as an existing object.'
-                        );
-                    } else {
-                        // Non-collision case
-                        this.emit('collide');
+                    if (obj.detectCollision) {
+                        let value = this.lookupCoords(obj.x, obj.y);
+                        let collidedObj =
+                            this.objects.objects[
+                                this.#searchValue(this.objects.objects, value)
+                            ];
+                        obj.collide(collidedObj);
                     }
                 }
             }
@@ -124,6 +148,12 @@ class Plane extends EventEmitter {
 
             this.#add(obj.x, obj.y, obj);
             this.objects.objects[obj.id] = obj;
+            this.#doOnce(() => {
+                this.objects.objects[obj.id].origin = {
+                    x: obj.x,
+                    y: obj.y,
+                };
+            });
             this.objects.ids.push(obj.id);
         }
     }
@@ -143,23 +173,76 @@ class Plane extends EventEmitter {
  * An object to be represented on a plane
  * @class
  */
-class PlaneObject {
+class PlaneObject extends EventEmitter {
     /**
      *
+     * @param {Plane} plane plane
      * @param {number} x X coordinate, origin is (0) (top left hand corner) [Not zero idnexed]
      * @param {number} y Y coordinate, origin is (0) (top left hand corner) [Not zero indexed]
      * @param {string} id A unique object ID
      * @param {string} value An emoji for said object to display on the plane. Defaults to objectID
      * @param {boolean} detectCollision Detect collision on other Objects.
      */
-    constructor(x, y, id, value = `${id}`, detectCollision = true) {
-        this.x = x;
-        this.y = y;
+    constructor(plane, x, y, id, value = `${id}`, detectCollision = true) {
+        super();
+        this.plane = { c: plane.columns, r: plane.rows };
+        this._x = x;
+        this._y = y;
         this.id = id;
         this.detectCollision = detectCollision;
         this.value = value;
     }
-    // make a sperate function to update all plane positions and draw them.like updatePlane()
+
+    // -1 for 0 based indexing.
+
+    set x(value) {
+        let out = 0;
+        if (value < 0) {
+            out = value - value;
+            this.collide('wall');
+        } else if (value > this.plane.r - 1) {
+            out = this.plane.r - 1;
+            this.collide('wall');
+        } else {
+            out = value;
+        }
+        this._x = out;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    set y(value) {
+        let out = 0;
+        if (value < 0) {
+            out = value - value;
+            this.collide('wall');
+        } else if (value > this.plane.c - 1) {
+            out = this.plane.c - 1;
+            this.collide('wall');
+        } else {
+            out = value;
+        }
+        this._y = out;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    /**
+     *
+     * @param {object|string} what What collided with this object?
+     */
+    collide(what) {
+        if (this.detectCollision) {
+            this.emit(
+                'collision',
+                what == 'wall' ? { id: 'wall', value: 'wall' } : what
+            );
+        } // If it's false don't emit anything. Although wall on the other hand cannot be passed through
+    }
 }
 
 module.exports = { Plane, PlaneObject };
