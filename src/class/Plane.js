@@ -1,12 +1,11 @@
 const EventEmitter = require('events');
 const Game = require('./Game');
 
-class Plane extends EventEmitter {
+class Plane {
     blank;
     plane;
     #once = false;
     constructor(game, rows, columns, blank = null) {
-        super();
         this.game = game;
         this.rows = rows;
         this.columns = columns;
@@ -108,6 +107,7 @@ class Plane extends EventEmitter {
      * @param  {...PlaneObject} arr Objects to be updated on plane
      */
     update(...arr) {
+        let array = arr.reverse();
         const planeObjects = Object.values(this.objects.objects);
 
         this.clear();
@@ -121,9 +121,7 @@ class Plane extends EventEmitter {
             return;
         }
 
-        for (const obj of arr) {
-            console.log(`x: ${obj.x}\ny: ${obj.y}`);
-
+        for (const obj of array) {
             for (const existingObj of planeObjects) {
                 if (
                     existingObj.x === obj.x &&
@@ -132,12 +130,15 @@ class Plane extends EventEmitter {
                 ) {
                     // Collision detected
                     if (obj.detectCollision) {
-                        let value = this.lookupCoords(obj.x, obj.y);
+                        let value =
+                            this.plane[this.#reverseYAxis(existingObj.y)][
+                                existingObj.x
+                            ];
                         let collidedObj =
                             this.objects.objects[
                                 this.#searchValue(this.objects.objects, value)
                             ];
-                        obj.collide(collidedObj);
+                        obj.collide(collidedObj, obj);
                     }
                 }
             }
@@ -234,8 +235,9 @@ class PlaneObject extends EventEmitter {
     /**
      *
      * @param {object|string} what What collided with this object?
+     * @param {PlaneObject} obj kjsadnjkdc lmao djsdoc
      */
-    collide(what) {
+    collide(what, obj) {
         if (this.detectCollision) {
             this.emit(
                 'collision',

@@ -19,10 +19,12 @@ class Game extends EventEmitter {
         return this.var.gaming;
     }
 
-    end(interaction, plane) {
+    end(interaction, custom, plane) {
         this.var.gaming = false;
         if (interaction) {
-            this.emit('end', interaction);
+            custom !== undefined || custom !== null
+                ? this.emit('end', interaction, custom)
+                : this.emit('end', interaction);
         } else {
             this.emit('end');
         }
@@ -33,7 +35,7 @@ class Game extends EventEmitter {
 
     error(error) {
         // forces an error with a msg and ends the game
-        this.emit('error', new TypeError(error));
+        this.emit('error', new error());
         this.end();
     }
 }
