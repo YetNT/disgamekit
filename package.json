@@ -1,12 +1,11 @@
 {
-    "name": "djs-game",
+    "name": "disgamekit",
     "version": "1.0.0",
-    "description": "A package that will help making discord.js bot's games easier.",
+    "description": "A small package that will help making ts/js discord bot mini games way easier!",
     "main": "src/index.js",
-    "types": "index.d.ts",
+    "types": "src/index.d.ts",
     "scripts": {
-        "test": "mocha src/index.test.js",
-        "lint": "npx prettier --write ."
+        "test": "mocha src/index.test.js"
     },
     "repository": {
         "type": "git",
@@ -15,7 +14,12 @@
     "keywords": [
         "discord.js",
         "game",
-        "djs-game"
+        "djs-game",
+        "discord-games",
+        "disgame",
+        "disgamekit",
+        "game-engine",
+        "light"
     ],
     "author": "Yetity",
     "license": "MIT",
@@ -23,11 +27,7 @@
         "url": "https://github.com/Yetity/djs-game/issues"
     },
     "homepage": "https://github.com/Yetity/djs-game#readme",
-    "dependencies": {
-        "discord.js": "^14.11.0"
-    },
     "devDependencies": {
-        "dotenv": "^16.3.1",
         "expect.js": "^0.3.1",
         "mocha": "^10.2.0",
         "prettier": "^2.8.8"
