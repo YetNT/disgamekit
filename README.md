@@ -159,7 +159,7 @@ In the example above, a new `Game` instance is created with a game client and a 
 
 ## Plane Class
 
-The `Plane` class represents a grid-based 2d plane and provides methods to manage and manipulate objects on the plane.
+The `Plane` class represents a grid-based 2d plane and provides methods to manage and manipulate objects on the plane. All objects refrenced can be found [here](#planeobject-class)
 
 ### Constructor
 
