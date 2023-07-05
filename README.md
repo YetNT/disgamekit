@@ -1,4 +1,7 @@
-# disgamekit
+<h1 align="center"> disgamekit </h1>
+<p align="center">
+<img alt="Static Badge" src="https://img.shields.io/badge/version-1.0.1-baige">
+</p>
 
 A small package that will help making ts/js discord bot mini games way easier!
 (placeholder for game example)
