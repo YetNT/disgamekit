@@ -38,12 +38,6 @@ npm i disgamekit
 
 ```js
 const { Game } = require('disgamekit');
-/* Discord.js code ahead
-
-const { Client, IntentsBitField } = require('discord.js');
-
-const client = new Client({ intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.MessageContent] });
-*/
 const game = new Game('gameId');
 ```
 
@@ -51,7 +45,7 @@ const game = new Game('gameId');
 
 #### `start`
 
-Starts the game and emit's the ["start"] event.
+Starts the game and emit's the "start" event.
 
 ```js
 game.start();
