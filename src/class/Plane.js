@@ -111,13 +111,8 @@ class Plane {
         const planeObjects = Object.values(this.objects.objects);
 
         this.clear();
-        if (this.game.var.gaming == false && planeObjects.length != 0) {
-            // If there are objects on the plane and the game has ended, send them to their origins.
-            for (const obj of planeObjects) {
-                this.#add(obj.origin.x, obj.origin.y, obj);
-            }
-            return;
-        } else if (this.game.var.gaming == false) {
+        if (this.game.var.gaming == false) {
+            console.log('hi');
             return;
         }
 
