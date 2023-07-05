@@ -1,16 +1,26 @@
-<style>
-    r {
-        color: red;
-    }
-</style>
-
-# djs-game
+# disgamekit
 
 ## Installation
 
 ```
-npm i djs-game
+npm i disgamekit
 ```
+
+## Table of Contents
+
+-   [Game Class](#game-class)
+-   -   [Constructor](#constructor)
+-   -   [Methods](#methods)
+-   -   [Events](#events)
+-   -   [Example](#example-use)
+-   [Plane Class](#plane-class)
+-   -   [Constructor](#constructor-1)
+-   -   [Methods](#methods-1)
+-   [PlaneObject Class](#planeobject-class)
+-   -   [Constructor](#constructor-2)
+-   -   [Events](#events-1)
+-   -   [Example (plane + planeobject)](#exmaple-use-plane--planeobject)
+-   [All classes exmaple](#example-discordjs)
 
 ## Game Class
 
@@ -18,11 +28,11 @@ npm i djs-game
 
 #### Parameters
 
--   `client` <r>(required)</r>: Your discord.js client object
--   `id` <r>(required)</r>: The unique identifier for the game.
+-   `client` : Your discord.js client object
+-   `id` : The unique identifier for the game.
 
 ```js
-const { Game } = require('djs-game');
+const { Game } = require('disgamekit');
 /* Discord.js code ahead
 
 const { Client, IntentsBitField } = require('discord.js');
@@ -34,15 +44,15 @@ const game = new Game(client, 'gameId');
 
 ### Methods
 
-#### start
+#### `start`
 
-Starts the game and emit's the "start" event.
+Starts the game and emit's the ["start"] event.
 
 ```js
 game.start();
 ```
 
-#### isGameOn
+#### `isGameOn`
 
 Returns game's current state
 
@@ -52,13 +62,15 @@ game.start();
 console.log(game.isGameOn()); // true
 ```
 
-#### end
+#### `end`
 
 Ends the game and emit's the "end" event.
 
 ##### Parameters
 
--   `interaction`: Interaction associated with the game
+-   `interaction`:**(optional)** Interaction associated with the game
+-   `custom`: Pass a custom string to be sent to the event listener.
+-   `plane`:**(optional)** Pass the plane to be reset.
 
 ```js
 game.start();
@@ -67,33 +79,67 @@ game.end(interaction); // so that when the end event is emitted you can edit an 
 console.log(game.isGameOn()); // false
 ```
 
-#### handleButtons
+### Events
 
-Handles button interactions during the game. Emits an event that is unique to the game ID when a button interaction occurs
+#### "start"
 
-_Throws an error if the game is not started before handling buttons_
+Fired when the game starts
 
 ```js
-game.handleButtons(); // Error: Cannot handle buttons before starting the game.
-game.start();
-game.handleButtons(); // void
+const { Game } = require('disgamekit');
+
+let game = new Game('game');
+game.on('start', () => {
+    console.log('Game sucessfully started!');
+});
+```
+
+#### "end"
+
+Fired when the game ends
+
+```javascript
+const { Game } = require('disgamekit');
+
+let game = new Game('game');
+
+game.on('end', () => {
+    console.log('Game ended!');
+});
+game.end();
+
+// If you have a component to end the game, you can edit the reply one last time.
+
+game.on('end', (i) => {
+    i.update('Game has ended.');
+});
+game.end(interaction);
+
+// And lastly if you used a custom message
+game.on('end', (i, c) => {
+    i.update(c);
+});
+game.end(interaction, 'Game has ended.');
+```
+
+#### "error"
+
+Fired when an error occurs.
+
+```js
+const { Game } = require('disgamekit');
+
+let game = new Game('game');
+game.on('error', (error) => {
+    console.log('Error occured!' + error);
+});
 ```
 
 ### Example use
 
 ```js
-const { Client, IntentsBitField } = require('discord.js');
-
-const client = new Client({
-    intents: [
-        IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent,
-    ],
-});
-
 const gameId = 'game`';
-const game = new Game(client, gameId);
+const game = new Game(gameId);
 
 game.on('start', () => {
     console.log('Game started!');
@@ -108,17 +154,9 @@ game.on('error', (error) => {
 });
 
 game.start();
-
-game.handleButtons();
-
-// Event that is emitted when a button is clicked.
-game.on(`${gameId}-btn`, (interaction) => {
-    interaction.update('cool');
-});
 ```
 
-In the example above, a new `Game` instance is created with a game client and a unique ID. Event listeners are added for the `start`, `end`, and `error` events. The game is started using `game.start()` and `handleButtons()` method is called to handle button interactions.
-Lastly we add an event listener for button interactions. `(game's id)-btn`
+In the example above, a new `Game` instance is created with a game client and a unique ID. Event listeners are added for the `start`, `end`, and `error` events. Lastly the game is started using `game.start()`.
 
 ## Plane Class
 
@@ -128,53 +166,48 @@ The `Plane` class represents a grid-based 2d plane and provides methods to manag
 
 #### Parameters
 
--   `game` <r>(required)</r>: The game instance associated with the plane.
--   `rows` <r>(required)</r>: The number of rows in the plane.
--   `columns` <r>(required)</r>: The number of columns in the plane.
--   `blank`: The default value for empty cells in the plane. Defaults to `null`
+-   `game`: The game instance associated with the plane.
+-   `rows`: The number of rows in the plane.
+-   `columns`: The number of columns in the plane.
+-   `blank`:**(optional)** The default value for empty cells in the plane. Defaults to `null`
 
 ```js
-const { Game, Plane } = require('djs-game');
-/* Discord.js code ahead
+const { Game, Plane } = require('disgamekit');
 
-const { Client, IntentsBitField } = require('discord.js');
-
-const client = new Client({ intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.MessageContent] });
-*/
-const game = new Game(client, 'gameId');
+const game = new Game('gameId');
 
 const plane = new Plane(game, 5, 5, 'blank');
 ```
 
 ### Methods
 
-#### lookupObj
+#### `lookupObj`
 
 Looks up an object's coordinates based on its ID.
 
 ##### Parameters
 
--   `inputValue`: The ID of the object to be looked up on the plane.
+-   `inputValue`:**(optional)** The ID of the object to be looked up on the plane.
 
 ```js
 // If an object with the ID: qwert was at x:2 y: 6
 plane.lookupObj('qwert'); // { x: 2, y: 6 }
 ```
 
-#### lookupCoords
+#### `lookupCoords`
 
 Looks up the value at the specified x and y coordinates on the plane
 
 ##### Parameters
 
--   `x`: The x-coordinate.
--   `y`: The y-coordinate
+-   `x`:**(optional)** The x-coordinate.
+-   `y`:**(optional)** The y-coordinate
 
 ```js
 plane.lookupCoords(2, 6); // "qwert"
 ```
 
-#### clear
+#### `clear`
 
 Clears the entire plane, removing all objects while preserving their coordinates.
 
@@ -182,7 +215,7 @@ Clears the entire plane, removing all objects while preserving their coordinates
 plane.clear();
 ```
 
-#### update
+#### `update`
 
 Adds/Updates/Removes Objects on the plane.
 If provided : It will update/add to the plane
@@ -190,20 +223,20 @@ If not provided : It will clear the plane of any objects.
 
 ##### Parameters
 
--   `...arr`: Numerous objects to be updated on the plane.
+-   `...arr`:**(optional)** Numerous objects to be updated on the plane.
 
 ```js
 plane.update(object1, object2, object3, object4);
 ```
 
-#### return
+#### `return`
 
 Reutrns a string representation of the plane, with optional row and column separators.
 
 ##### Parameters
 
--   `row`: The separator for rows. Defaults to an empty string.
--   `column`: The separator for columns. Defaults to a line break
+-   `row`:**(optional)** The separator for rows. Defaults to an empty string.
+-   `column`:**(optional)** The separator for columns. Defaults to a line break
 
 ```js
 // For example, the plane has 5 rows and 5 columns
@@ -225,22 +258,42 @@ Represents an object to be placed on the plane.
 
 #### Parameters
 
--   `x`: <r>(required)</r>: The object's origin on the x-axis
--   `y`: <r>(required)</r>: The object's origin on the y-axis
--   `id`: <r>(required)</r>: A unique identifier for the object.
--   `value`: The emoji or value to display on the plane for said object. Defaults to the object's ID.
--   `detectCollision`: Whether to detect collisions with other objects. Defaults to `true`
+-   `plane`: Plane instance.
+-   `x`: The object's origin on the x-axis
+-   `y`: The object's origin on the y-axis
+-   `id`: A unique identifier for the object.
+-   `value`:**(optional)** The emoji or value to display on the plane for said object. Defaults to the object's ID.
+-   `detectCollision`:**(optional)** Whether to detect collisions with other objects. Defaults to `true`
 
 ```js
-const { PlaneObject } = require('djs-game');
+const { Plane, PlaneObject } = require('disgamekit');
 
-let hat = new PlaneObject(0, 0, 'hat', '🧢');
+let plane = new Plane(...)
+let hat = new PlaneObject(plane, 0, 0, 'hat', '🧢');
+```
+
+### Events
+
+#### "collision"
+
+Fired when `foo` collides with a wall or another `PlaneObject` instance
+
+```js
+const { Game, PlaneObject, Plane } = require('disgamekit');
+
+let game = new Game('game');
+let plane = new Plane(game, 4, 4);
+let object = new PlaneObject(plane, 2, 0, 'object');
+
+object.on('colllision', (i) => {
+    console.log(`Object collided with ${i.id}!`);
+});
 ```
 
 ## Exmaple use (Plane & PlaneObject)
 
 ```js
-const { Plane, PlaneObject } = require('djs-game');
+const { Plane, PlaneObject } = require('disgamekit');
 
 // Create a game instance
 const game = new Game();
@@ -249,11 +302,16 @@ const game = new Game();
 const plane = new Plane(game, 5, 5);
 
 // Create plane objects
-const object1 = new PlaneObject(2, 2, 'obj1', 'A');
-const object2 = new PlaneObject(3, 3, 'obj2', 'B');
+const object1 = new PlaneObject(plane, 2, 2, 'obj1', 'A');
+const object2 = new PlaneObject(plane, 3, 3, 'obj2', 'B');
 
 // Update the plane with the objects
 plane.update(object1, object2);
+
+// Check for collision (This is called when collided with a wall, even if detectCollison = false.)
+object1.on('collision', (i) => {
+    console.log(`${i} collided with object1!`);
+});
 
 // Lookup object coordinates
 const coordinates1 = plane.lookupObj('obj1');
@@ -267,7 +325,7 @@ console.log('Value at coordinates (3, 3):', value); // Output: Value at coordina
 plane.clear();
 
 // Update the plane with a single object
-const object3 = new PlaneObject(1, 1, 'obj3', 'C');
+const object3 = new PlaneObject(plane, 1, 1, 'obj3', 'C');
 plane.update(object3);
 
 // Return the plane as a string
@@ -288,4 +346,176 @@ We perform lookups on the plane using the `lookupObj()` method to retrieve the c
 
 The plane is cleared using the `clear()` method and then updated with a new object (`object3`). Finally, we return the plane as a string representation using the `return()` method and print it to the console.
 
-## Example use (Plane, PlaneObject & Game)
+## Example [Discord.js](https://discord.js.org/)
+
+```js
+// This works the same with interactions. But so that the code is not 6k lines long, I've used messages.
+// Discord.js and disgamekit imports
+const {
+    Client,
+    IntentsBitField,
+    EmbedBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder,
+} = require("discord.js");
+const {
+    Game,
+    Plane,
+    PlaneObject,
+} = require("disgamekit");
+
+const client = new Client({
+    intents: [
+        IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.GuildMessages,
+        IntentsBitField.Flags.MessageContent,
+    ],
+});
+
+client.on("ready", () => {
+    console.log(`${client.user.tag} is online`);
+});
+
+// var setup
+const game = new Game(client, "game");
+game.var.score = 0
+const plane = new Plane(game, 10, 10, ":green_square:");
+const moveable = new PlaneObject(
+    plane,
+    3,
+    3,
+    "moveable",
+    ":blue_square:",
+    true
+);
+const nonmove = new PlaneObject(plane, 2, 2, "nonmove", ":apple:");
+
+// game controls
+const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+        .setCustomId("up")
+        .setLabel("up")
+        .setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder()
+        .setCustomId("down")
+        .setLabel("down")
+        .setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder()
+        .setCustomId("left")
+        .setLabel("left")
+        .setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder()
+        .setCustomId("right")
+        .setLabel("right")
+        .setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder()
+        .setCustomId("end")
+        .setLabel("end")
+        .setStyle(ButtonStyle.Danger)
+);
+
+client.on("messageCreate", async (m) => {
+    if (m.author.bot) return;
+    const message = m.content;
+    if (!message.includes("mjb?")) return;
+
+    let cmd = message.split("?");
+
+    switch (cmd[1]) {
+        case "help":
+            m.reply("No.");
+            break;
+        case "button":
+            game.start();
+            plane.update(moveable, nonmove); // show the initial state by updating the object to the grid before hand
+            await m.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("g a m e")
+                        .setDescription(plane.return()),
+                ],
+                components: [row],
+            });
+            break;
+    }
+});
+// game events
+game.on("start", () => {
+    console.log("Game started!");
+});
+game.on("end", async (i) => {
+    await i.update({ content: `game has ended! Your final score = ${game.var.score}`, components: [], embeds: [] }); // clear buttons so no errors occur.
+    console.log("Game ended!");
+});
+moveable.on("collision", (obj) => { // when the moveable collides with nonemoveable update the score, if wall, log it to the console.
+    if (obj.id == nonmove.id) {
+            game.var.score++
+    } else if (obj.id == "wall") { // You can just use an if since it's 2 objects but i used an else if for documentation sake
+            console.log("Collision with wall!")
+    }
+});
+
+// game controls
+client.on(`interactionCreate`, async (i) => {
+    switch (i.customId) {
+        case "up":
+            moveable.y++;
+            await update(i, plane, moveable, nonmove);
+            break;
+        case "down":
+            moveable.y--;
+            await update(i, plane, moveable, nonmove);
+            break;
+        case "left":
+            moveable.x--;
+            await update(i, plane, moveable, nonmove);
+            break;
+        case "right":
+            moveable.x++;
+            await update(i, plane, moveable, nonmove);
+            break;
+        case "end":
+            game.end(i);
+    }
+});
+
+// helper function to make this 50 less lines.
+async function update(i, plane, ...item) {
+    /* 
+        you don't need to make a function like this
+        but due to my controls doing the same thing
+        over and, over again, I made it a function.
+        */
+    await plane.update(...item);
+    await i.update({
+        embeds: [
+            new EmbedBuilder()
+                .setTitle(`g a m e`)
+                .setDescription(plane.return())
+                .setFooter({text: `Score = ${game.var.score}`})
+        ],
+        components: [row],
+    });
+}
+
+// Login the Discord client with your token
+client.login('your-token-here-bro');
+```
+
+This code sets up a Discord bot using the Discord.js library and integrates it with a game using the disgamekit library. Here's a breakdown of the major components:
+
+-   Discord.js: It's used to create the Discord client, handle events, and interact with the Discord API.
+-   disgamekit: This library.
+
+The code initializes a game with a client, a plane, and plane objects. It also sets up game controls as buttons using an `ActionRowBuilder`.
+
+When a user sends a message with the command "mjb?button", the game starts, the plane is updated with the objects, and the game state is sent as a reply with the buttons.
+
+The game responds to interactions with the buttons, updating the position of the moveable object and updating the game state accordingly.
+
+The game emits events for "start", "end", and "collision", which can be handled to perform actions when these events occur. (Currently) the `moveable` listens for the "collision" event and checks whether it collided with an object or the wall. If it's the wall it logs to the console. If it's the `nonmove` object, it updates the game variables stored in `game.var`.
+
+The `update` function is a helper function that updates the game state and updates the message with the new state and buttons.
+
+**NOTE** - The code above is set up in a way that every user plays the same game . To avoid this either initialize the variables in the message create or use a map.
