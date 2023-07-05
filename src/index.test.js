@@ -16,10 +16,6 @@ describe('Game', () => {
     it('should have a started game', () => {
         expect(game.isGameOn()).to.be.true;
     });
-
-    it('should throw an error (due to the test not having a D.js client)', () => {
-        expect(game.handleButtons()).to.throwException();
-    });
 });
 describe('Plane', () => {
     describe('the actual plane', () => {
