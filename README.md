@@ -28,7 +28,6 @@ npm i disgamekit
 
 #### Parameters
 
--   `client` : Your discord.js client object
 -   `id` : The unique identifier for the game.
 
 ```js
@@ -39,7 +38,7 @@ const { Client, IntentsBitField } = require('discord.js');
 
 const client = new Client({ intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.MessageContent] });
 */
-const game = new Game(client, 'gameId');
+const game = new Game('gameId');
 ```
 
 ### Methods
@@ -69,7 +68,7 @@ Ends the game and emit's the "end" event.
 ##### Parameters
 
 -   `interaction`:**(optional)** Interaction associated with the game
--   `custom`: Pass a custom string to be sent to the event listener.
+-   `custom`:**(optional)** Pass a custom string to be sent to the event listener.
 -   `plane`:**(optional)** Pass the plane to be reset.
 
 ```js
