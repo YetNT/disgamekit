@@ -1,5 +1,8 @@
 # disgamekit
 
+A small package that will help making ts/js discord bot mini games way easier!
+(placeholder for game example)
+
 ## Installation
 
 ```
@@ -295,7 +298,7 @@ object.on('colllision', (i) => {
 const { Plane, PlaneObject } = require('disgamekit');
 
 // Create a game instance
-const game = new Game();
+const game = new Game('gameId');
 
 // Create a plane with 5 rows and 5 columns
 const plane = new Plane(game, 5, 5);
@@ -357,12 +360,8 @@ const {
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
-} = require("discord.js");
-const {
-    Game,
-    Plane,
-    PlaneObject,
-} = require("disgamekit");
+} = require('discord.js');
+const { Game, Plane, PlaneObject } = require('disgamekit');
 
 const client = new Client({
     intents: [
@@ -372,66 +371,66 @@ const client = new Client({
     ],
 });
 
-client.on("ready", () => {
+client.on('ready', () => {
     console.log(`${client.user.tag} is online`);
 });
 
 // var setup
-const game = new Game(client, "game");
-game.var.score = 0
-const plane = new Plane(game, 10, 10, ":green_square:");
+const game = new Game(client, 'game');
+game.var.score = 0;
+const plane = new Plane(game, 10, 10, ':green_square:');
 const moveable = new PlaneObject(
     plane,
     3,
     3,
-    "moveable",
-    ":blue_square:",
+    'moveable',
+    ':blue_square:',
     true
 );
-const nonmove = new PlaneObject(plane, 2, 2, "nonmove", ":apple:");
+const nonmove = new PlaneObject(plane, 2, 2, 'nonmove', ':apple:');
 
 // game controls
 const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-        .setCustomId("up")
-        .setLabel("up")
+        .setCustomId('up')
+        .setLabel('up')
         .setStyle(ButtonStyle.Secondary),
     new ButtonBuilder()
-        .setCustomId("down")
-        .setLabel("down")
+        .setCustomId('down')
+        .setLabel('down')
         .setStyle(ButtonStyle.Secondary),
     new ButtonBuilder()
-        .setCustomId("left")
-        .setLabel("left")
+        .setCustomId('left')
+        .setLabel('left')
         .setStyle(ButtonStyle.Secondary),
     new ButtonBuilder()
-        .setCustomId("right")
-        .setLabel("right")
+        .setCustomId('right')
+        .setLabel('right')
         .setStyle(ButtonStyle.Secondary),
     new ButtonBuilder()
-        .setCustomId("end")
-        .setLabel("end")
+        .setCustomId('end')
+        .setLabel('end')
         .setStyle(ButtonStyle.Danger)
 );
 
-client.on("messageCreate", async (m) => {
+client.on('messageCreate', async (m) => {
     if (m.author.bot) return;
     const message = m.content;
-    if (!message.includes("mjb?")) return;
+    if (!message.includes('mjb?')) return;
 
-    let cmd = message.split("?");
+    let cmd = message.split('?');
 
     switch (cmd[1]) {
-        case "help":
-            m.reply("No.");
+        case 'help':
+            m.reply('No.');
             break;
-        case "button":
+        case 'button':
             game.start();
             plane.update(moveable, nonmove); // show the initial state by updating the object to the grid before hand
             await m.reply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle("g a m e")
+                        .setTitle('g a m e')
                         .setDescription(plane.return()),
                 ],
                 components: [row],
@@ -440,41 +439,47 @@ client.on("messageCreate", async (m) => {
     }
 });
 // game events
-game.on("start", () => {
-    console.log("Game started!");
+game.on('start', () => {
+    console.log('Game started!');
 });
-game.on("end", async (i) => {
-    await i.update({ content: `game has ended! Your final score = ${game.var.score}`, components: [], embeds: [] }); // clear buttons so no errors occur.
-    console.log("Game ended!");
+game.on('end', async (i) => {
+    await i.update({
+        content: `game has ended! Your final score = ${game.var.score}`,
+        components: [],
+        embeds: [],
+    }); // clear buttons so no errors occur.
+    console.log('Game ended!');
 });
-moveable.on("collision", (obj) => { // when the moveable collides with nonemoveable update the score, if wall, log it to the console.
+moveable.on('collision', (obj) => {
+    // when the moveable collides with nonemoveable update the score, if wall, log it to the console.
     if (obj.id == nonmove.id) {
-            game.var.score++
-    } else if (obj.id == "wall") { // You can just use an if since it's 2 objects but i used an else if for documentation sake
-            console.log("Collision with wall!")
+        game.var.score++;
+    } else if (obj.id == 'wall') {
+        // You can just use an if since it's 2 objects but i used an else if for documentation sake
+        console.log('Collision with wall!');
     }
 });
 
 // game controls
 client.on(`interactionCreate`, async (i) => {
     switch (i.customId) {
-        case "up":
+        case 'up':
             moveable.y++;
             await update(i, plane, moveable, nonmove);
             break;
-        case "down":
+        case 'down':
             moveable.y--;
             await update(i, plane, moveable, nonmove);
             break;
-        case "left":
+        case 'left':
             moveable.x--;
             await update(i, plane, moveable, nonmove);
             break;
-        case "right":
+        case 'right':
             moveable.x++;
             await update(i, plane, moveable, nonmove);
             break;
-        case "end":
+        case 'end':
             game.end(i);
     }
 });
@@ -492,7 +497,7 @@ async function update(i, plane, ...item) {
             new EmbedBuilder()
                 .setTitle(`g a m e`)
                 .setDescription(plane.return())
-                .setFooter({text: `Score = ${game.var.score}`})
+                .setFooter({ text: `Score = ${game.var.score}` }),
         ],
         components: [row],
     });
