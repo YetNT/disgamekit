@@ -37,9 +37,10 @@ declare class Game extends EventEmitter {
     /**
      * End's the game
      * @param {Interaction} interaction Pass the interaction that was associated with the game. If null it will not do anythinng to the message. (Discord.js or Eris)
+     * @param {string} custom Pass a custom string to be sent to the event listener.
      * @param {Plane} plane Pass the Plane to be cleared as the game ends.
      */
-    end(interaction?: Interaction, plane?: Plane): void;
+    end(interaction?: Interaction, custom?: string, plane?: Plane): void;
 
     /**
      * Forces the game to error and ends the game
@@ -54,7 +55,10 @@ declare class Game extends EventEmitter {
     /**
      * Listens for when the game ends.
      */
-    on(event: 'end', listener: () => void): this;
+    on(
+        event: 'end',
+        listener: (interaction: Interaction, custom: string) => void
+    ): this;
     /**
      * Listens for when an error occurs
      */
