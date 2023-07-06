@@ -112,7 +112,6 @@ class Plane {
 
         this.clear();
         if (this.game.var.gaming == false) {
-            console.log('hi');
             return;
         }
 

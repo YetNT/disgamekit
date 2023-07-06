@@ -186,7 +186,7 @@ Looks up an object's coordinates based on its ID.
 
 ##### Parameters
 
--   `inputValue`:**(optional)** The ID of the object to be looked up on the plane.
+-   `inputValue`: The ID of the object to be looked up on the plane.
 
 ```js
 // If an object with the ID: qwert was at x:2 y: 6
