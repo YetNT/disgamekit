@@ -1,6 +1,6 @@
 {
     "name": "disgamekit",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "A small package that will help making ts/js discord bot mini games way easier!",
     "main": "src/index.js",
     "types": "src/index.d.ts",
@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Yetity/disgamekit.git"
+        "url": "git+https://github.com/YetNT/disgamekit.git"
     },
     "keywords": [
         "discord.js",
@@ -19,14 +19,16 @@
         "disgame",
         "disgamekit",
         "game-engine",
-        "light"
+        "light",
+        "turns",
+        "discord"
     ],
-    "author": "Yetity",
+    "author": "YetNT",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/Yetity/disgamekit/issues"
+        "url": "https://github.com/YetNT/disgamekit/issues"
     },
-    "homepage": "https://github.com/Yetity/disgamekit#readme",
+    "homepage": "https://github.com/YetNT/disgamekit#readme",
     "devDependencies": {
         "expect.js": "^0.3.1",
         "mocha": "^10.2.0",

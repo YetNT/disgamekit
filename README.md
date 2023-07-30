@@ -1,6 +1,6 @@
 <h1 align="center"> disgamekit </h1>
 <p align="center">
-<img alt="Static Badge" src="https://img.shields.io/badge/version-1.0.1-baige">
+<img alt="Static Badge" src="https://img.shields.io/badge/version-1.1.0-baige">
 </p>
 
 A small package that will help making ts/js discord bot mini games way easier!
@@ -27,8 +27,15 @@ npm i disgamekit
 -   -   [Events](#events-1)
 -   -   [Example (plane + planeobject)](#exmaple-use-plane--planeobject)
 -   [All classes exmaple](#example-discordjs)
+-   [Turns Class](#turns-class)
+-   -   [Constructor](#constructor-3)
+-   -   [Methods](#methods-2)
+-   [Player Class (Turns)](#player-class)
+-   -   [Constructor](#constructor-4)
 
 ## Game Class
+
+The Game class represents a simple game controller with start, end, and error handling functionality. It manages the overall state of the game and provides methods to start, end, and handle game events.
 
 ### Constructor
 
@@ -251,7 +258,7 @@ blank blank blank blank blank
 
 ## PlaneObject Class
 
-Represents an object to be placed on the plane.
+The PlaneObject class represents an object that can be placed on the Plane. It emits events for collision detection and can be used to create interactive game elements.
 
 ### Constructor
 
@@ -520,3 +527,135 @@ The game emits events for "start", "end", and "collision", which can be handled 
 The `update` function is a helper function that updates the game state and updates the message with the new state and buttons.
 
 **NOTE** - The code above is set up in a way that every user plays the same game . To avoid this either initialize the variables in the message create or use a map.
+
+## Turns Class
+
+The Turns class manages a turn-based system for games with multiple players. It allows adding, removing, and advancing turns for players.
+
+### Constructor
+
+#### Parameters
+
+-   `...players`: Numerous players to be added
+
+```js
+const { Turns, Player } = require('disgamekit');
+
+const player1 = new Player('1', 'Alice');
+const player2 = new Player('2', 'Bob');
+const player3 = new Player('3', 'Charlie');
+
+const turns = new Turns(player1, player2, player3);
+```
+
+### Methods
+
+#### `addPlayer`
+
+Adds a new player to the game.
+
+##### Parameters
+
+-   `player`: The player represented by the player class
+
+```js
+const { Turns, Player } = require('disgamekit');
+
+const player1 = new Player('1', 'Alice');
+const player2 = new Player('2', 'Bob');
+
+const turns = new Turns(player1);
+
+const player3 = new Player('3', 'Charlie');
+turns.addPlayer(player3);
+```
+
+#### `removePlayer`
+
+Removes a player from the game.
+
+##### Parameters
+
+-   `player`: The player represented by the player class
+
+```js
+const { Turns, Player } = require('disgamekit');
+
+const player1 = new Player('1', 'Alice');
+const player2 = new Player('2', 'Bob');
+const player3 = new Player('3', 'Charlie');
+
+const turns = new Turns(player1, player2, player3);
+
+turns.removePlayer(player2);
+```
+
+#### `startTurns`
+
+Starts the turn-based game.
+
+```js
+const { Turns, Player } = require('disgamekit');
+
+const player1 = new Player('1', 'Alice');
+const player2 = new Player('2', 'Bob');
+
+const turns = new Turns(player1, player2);
+
+turns.startTurns();
+```
+
+#### `nextTurn`
+
+Advances to the next turn.
+
+##### Parameters
+
+-   `overridePlayer`:**(optional)** Override with an additional player, making them have an extra turn
+
+```js
+const { Turns, Player } = require('disgamekit');
+
+const player1 = new Player('1', 'Alice');
+const player2 = new Player('2', 'Bob');
+
+const turns = new Turns(player1, player2);
+
+turns.startTurns();
+
+turns.nextTurn();
+```
+
+#### `reverseOrder()`
+
+Reverses the order of turns.
+
+```js
+const { Turns, Player } = require('disgamekit');
+
+const player1 = new Player('1', 'Alice');
+const player2 = new Player('2', 'Bob');
+const player3 = new Player('3', 'Charlie');
+
+const turns = new Turns(player1, player2, player3);
+
+turns.reverseOrder();
+```
+
+## Player Class
+
+The Player class represents a player in the game (specifically for the Turns class). It holds a unique identifier (id) and the player's name (name).
+
+### Constructor
+
+#### Parameters
+
+-   `id`: The player's unique identifier.
+-   `name`: The player's name.
+
+```js
+const { Player } = require('disgamekit');
+
+const player1 = new Player('1', 'Alice');
+const player2 = new Player('2', 'Bob');
+```
