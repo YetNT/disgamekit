@@ -1,6 +1,6 @@
 const expect = require('expect.js');
 const { describe, it } = require('mocha');
-const { Game, Plane, PlaneObject } = require('./index');
+const { Game, Plane, PlaneObject, Turns, Player } = require('./index');
 
 const testGameId = 'gameId';
 
@@ -16,6 +16,10 @@ var apple = new PlaneObject(plane, 1, 1, 'apple');
 var plane2 = new Plane(game, 10, 10, 'empty');
 var apple2 = new PlaneObject(plane2, 1, 1, 'apple2');
 
+var martin = new Player('martin', 'Martin');
+var rider = new Player('rider', 'Rider');
+
+var turns = new Turns(martin);
 describe('Game', () => {
     it('should have a started game', () => {
         expect(game.isGameOn()).to.be.true;
@@ -95,5 +99,23 @@ describe('Plane', () => {
             expect(plane2.lookupCoords(4, 2)).to.not.be(apple2.value);
             expect(plane2.lookupObj(apple2.id)).to.not.be.eql({ x: 4, y: 2 });
         });
+    });
+});
+describe('Turns', () => {
+    it('should have a current player of undefined as the startTurns method was not called yet', () => {
+        expect(turns.currentPlayer).to.be(undefined);
+    });
+    it('should start the turn, making martin the current player', () => {
+        turns.startTurns();
+        turns.addPlayer(rider);
+        expect(turns.currentPlayer).to.be(martin);
+    });
+    it('should make rider the current player.', () => {
+        turns.nextTurn();
+        expect(turns.currentPlayer).to.be(rider);
+    });
+    it('should keep rider as the current playr by overriding next turn', () => {
+        turns.nextTurn(rider);
+        expect(turns.currentPlayer).to.be(rider);
     });
 });
