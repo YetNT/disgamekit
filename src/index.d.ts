@@ -196,4 +196,63 @@ declare class PlaneObject {
     ): this;
 }
 
-export { Game, Plane, PlaneObject };
+/**
+ * @class
+ * Class for handling Turn based games.
+ */
+declare class Turns extends EventEmitter {
+    /**
+     *
+     * @param {Player} players The plane instance that this wil be placed on.
+     */
+    constructor(...players: Player);
+
+    /**
+     *
+     * @param {Player} player Player to be added to the Turns arrrray
+     */
+    addPlayer(player: Player): void;
+
+    /**
+     *
+     * @param {Player} player Player to be removed from the Turns arrrray
+     */
+    removePlayer(player: Player): void;
+
+    /**
+     * Start by adding the first player as the current player
+     */
+    startTurns(): void;
+
+    /**
+     * 
+     * @param {Player} overridePlayer Overrides with a player, if overriden with a player who recently had a turn, they'll have an extra turn
+     */
+    nextTurn(overridePlayer?: Player): void;
+
+    /**
+     * Reverses the order of the turns 
+     */
+    reverseOrder(): void
+
+    /**
+     * The current player. If `startTurns` was not run, this will be equal to undefined
+     */
+    currentPlayer: Player;
+}
+
+/**
+ * @class
+ * Player class for the Turns class
+ */
+declare class Player {
+    
+    /**
+     * 
+     * @param id Unique Id for the player
+     * @param name Name for said Player
+     */
+    constructor(id: string, name: string);
+}
+
+export { Game, Plane, PlaneObject, Turns, Player };
