@@ -153,6 +153,7 @@ declare class PlaneObject {
      * @param {string} id A unique object ID
      * @param {string} value An emoji for said object to display on the plane. Defaults to objectID
      * @param {boolean} detectCollision Detect collision on other Objects.
+     * @param {boolean} ai Enable object AI. (Moves to desired target)
      */
     constructor(
         plane: Plane,
@@ -160,7 +161,8 @@ declare class PlaneObject {
         y: number,
         id: string,
         value?: string,
-        detectCollision?: boolean
+        detectCollision?: boolean,
+        ai?: boolean
     );
 
     /**
@@ -183,6 +185,46 @@ declare class PlaneObject {
      * Detect collision, if false, it will pass through existing PlaneObjects
      */
     detectCollision: boolean;
+
+    ai: {
+        /**
+         * Is it an AI?
+         */
+        ai: boolean;
+        /**
+         * Target to go to.
+         */
+        target: PlaneObject;
+        /**
+         * Is the AI running?
+         */
+        running: boolean;
+    };
+
+    /**
+     * Is the object an AI?
+     */
+    isAi(): boolean;
+
+    /**
+     * Start the AI instance
+     * @param {PlaneObject} target Start targetting specific object.
+     * @returns
+     */
+    start(target: PlaneObject): void;
+
+    /**
+     * Step. Moves 1 step closer to the target's X and Y
+     * @param {PlaneObject} target Override target (Switches to another target globally)
+     * @returns
+     */
+    step(target?: PlaneObject): void;
+
+    /**
+     * Stop running the AI
+     * @returns void
+     */
+    stop(): void;
 
     /**
      * Emitted when a collision occurs with another object.
@@ -225,15 +267,15 @@ declare class Turns extends EventEmitter {
     startTurns(): void;
 
     /**
-     * 
+     *
      * @param {Player} overridePlayer Overrides with a player, if overriden with a player who recently had a turn, they'll have an extra turn
      */
     nextTurn(overridePlayer?: Player): void;
 
     /**
-     * Reverses the order of the turns 
+     * Reverses the order of the turns
      */
-    reverseOrder(): void
+    reverseOrder(): void;
 
     /**
      * The current player. If `startTurns` was not run, this will be equal to undefined
@@ -246,9 +288,8 @@ declare class Turns extends EventEmitter {
  * Player class for the Turns class
  */
 declare class Player {
-    
     /**
-     * 
+     *
      * @param id Unique Id for the player
      * @param name Name for said Player
      */
