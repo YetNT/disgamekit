@@ -1,45 +1,50 @@
-const EventEmitter = require('events');
+import { EventEmitter } from 'events';
 
-class Turns extends EventEmitter {
+export class Turns extends EventEmitter {
+    players: Player[];
+    currentPlayer: Player;
     /**
      * @constructor
      * @param {...Player} players
      */
-    constructor(...players) {
+    constructor(...players: Player[]) {
         super();
         this.players = players;
         this.currentPlayer = undefined;
     }
 
     /**
-     *
-     * @param {Player} player
+     * Add a player to the turns array
+     * @param {Player} player Player to be added to the turns array
      */
-    addPlayer(player) {
+    addPlayer(player: Player): void {
         this.players.push(player);
     }
 
     /**
-     *
-     * @param {Player} player
+     * Remove a player from the turns array
+     * @param {Player} player Player to be removed from the turns array
      */
-    removePlayer(player) {
-        let index = this.players.indexOf(player);
+    removePlayer(player: Player): void {
+        let index: number = this.players.indexOf(player);
         if (index !== 1) {
             this.players.splice(index, 1);
         }
     }
 
-    startTurns() {
+    /**
+     * Start by adding the first player as the current player
+     */
+    startTurns(): void {
         this.emit('turnStart');
         this.currentPlayer = this.players[0];
     }
 
     /**
      *
-     * @param {Player} overridePlayer
+     * @param {Player} overridePlayer Overrides with a player, if overriden with a player who recently had a turn, they'll have an extra turn
      */
-    nextTurn(overridePlayer = undefined) {
+    nextTurn(overridePlayer: Player) {
         // override player makes player have an extra turn
         if (overridePlayer === undefined || overridePlayer === null) {
             let index =
@@ -59,17 +64,30 @@ class Turns extends EventEmitter {
         }
     }
 
-    reverseOrder() {
+    /**
+     * Reverses the order of the turns
+     */
+    reverseOrder(): void {
         // reverse the order of the turns (uno refrence)
-        this.players = this.players.reverse;
+        this.players = this.players.reverse();
     }
 }
 
-class Player {
-    constructor(id, name) {
+/**
+ * @class
+ * Player class for the Turns class
+ */
+export class Player {
+    id: string;
+    name: string;
+
+    /**
+     *
+     * @param id Unqiue ID for the player
+     * @param name Name for said player
+     */
+    constructor(id: string, name: string) {
         this.id = id;
         this.name = name;
     }
 }
-
-module.exports = { Turns, Player };

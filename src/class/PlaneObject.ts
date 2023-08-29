@@ -1,11 +1,28 @@
-const EventEmitter = require('events');
-const Plane = require('./Plane');
+import { EventEmitter } from 'events';
+import { Plane } from './Plane';
 
 /**
  * An object to be represented on a plane
  * @class
  */
-class PlaneObject extends EventEmitter {
+export class PlaneObject extends EventEmitter {
+    plane: { c: number; r: number };
+    origin: { x: number; y: number };
+    _x: number;
+    _y: number;
+    /**
+     * Unqiue identifier
+     */
+    id: string;
+    /**
+     * Detect Collision, if false, it will pass thorugh objects without emitting an event.
+     */
+    detectCollision: boolean;
+    /**
+     * Value for it to return when displaying an empty region on the plane.
+     */
+    value: string;
+    ai: { ai: boolean; target: PlaneObject | undefined; running: boolean };
     /**
      *
      * @param {Plane} plane plane
@@ -17,21 +34,23 @@ class PlaneObject extends EventEmitter {
      * @param {boolean} ai PlaneObject AI (Moves by itself to desired target)
      */
     constructor(
-        plane,
-        x,
-        y,
-        id,
-        value = `${id}`,
-        detectCollision = true,
-        ai = false
+        plane: Plane,
+        x: number,
+        y: number,
+        id: string,
+        value?: string,
+        detectCollision?: boolean,
+        ai?: boolean
     ) {
         super();
         this.plane = { c: plane.columns, r: plane.rows };
         this._x = x;
         this._y = y;
         this.id = id;
-        this.detectCollision = detectCollision;
-        this.value = value;
+        this.origin = { x: x, y: y };
+        this.detectCollision =
+            detectCollision === undefined ? true : detectCollision;
+        this.value = value === undefined ? id : value;
         this.ai = { ai: ai, target: undefined, running: false };
     }
 
@@ -51,6 +70,9 @@ class PlaneObject extends EventEmitter {
         this._x = out;
     }
 
+    /**
+     * X coordinate
+     */
     get x() {
         return this._x;
     }
@@ -69,6 +91,9 @@ class PlaneObject extends EventEmitter {
         this._y = out;
     }
 
+    /**
+     * Y coordinate
+     */
     get y() {
         return this._y;
     }
@@ -77,7 +102,7 @@ class PlaneObject extends EventEmitter {
      *
      * @param {object|string} what What collided with this object?
      */
-    collide(what) {
+    collide(what: Object | string): void {
         if (this.detectCollision) {
             this.emit('collision', what);
         } // If it's false don't emit anything. Although wall on the other hand cannot be passed through
@@ -86,16 +111,16 @@ class PlaneObject extends EventEmitter {
     /**
      * Is this object an AI?
      */
-    isAi() {
+    isAi(): boolean {
         return this.ai.ai;
     }
 
     /**
-     *
+     * STart the Ai instance
      * @param {PlaneObject} target STart targetting specific object.
      * @returns
      */
-    start(target) {
+    start(target: PlaneObject) {
         if (!this.isAi()) return new TypeError(`${this.id} is not an AI.`);
         if (!(target instanceof PlaneObject))
             return new TypeError('Target must be typeof PlaneObject class.');
@@ -104,11 +129,11 @@ class PlaneObject extends EventEmitter {
     }
 
     /**
-     *
+     * Step 1 closer to the target.
      * @param {PlaneObject} target Override target (Switches to another target globally)
-     * @returns
      */
-    step(target = this.ai.target) {
+    step(target: PlaneObject) {
+        target = target === undefined ? this.ai.target : target;
         if (!this.isAi()) return new TypeError(`${this.id} is not an AI.`);
         if (!this.ai.running) return new Error('AI has not been started.');
         this.ai.target = target;
@@ -133,7 +158,10 @@ class PlaneObject extends EventEmitter {
      * @param {number} targetY Target Y coordinate
      * @returns {{ x: number, y: number } | null} Object with next step's coordinates, or null if no path found
      */
-    #calcNextStep(targetX, targetY) {
+    #calcNextStep(
+        targetX: number,
+        targetY: number
+    ): { x: number; y: number } | null {
         const deltaX = Math.sign(targetX - this.x);
         const deltaY = Math.sign(targetY - this.y);
 
@@ -148,5 +176,3 @@ class PlaneObject extends EventEmitter {
         return { x: nextX, y: nextY };
     }
 }
-
-module.exports = PlaneObject;
