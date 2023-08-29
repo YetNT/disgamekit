@@ -1,6 +1,6 @@
 const expect = require('expect.js');
 const { describe, it } = require('mocha');
-const { Game, Plane, PlaneObject, Turns, Player } = require('./index');
+const { Game, Plane, PlaneObject, Turns, Player } = require('../dist/index');
 
 const testGameId = 'gameId';
 
