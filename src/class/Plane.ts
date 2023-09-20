@@ -169,7 +169,7 @@ export class Plane {
      * @param {string} column Split columns, default is a line break.
      * @returns String with output plane.
      */
-    return(row: string, column: string): string {
+    return(row?: string, column?: string): string {
         row = row === undefined ? '' : row;
         column = column === undefined ? '\n' : column;
         return this.plane.map((subArray) => subArray.join(row)).join(column);

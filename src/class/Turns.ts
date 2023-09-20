@@ -44,7 +44,7 @@ export class Turns extends EventEmitter {
      *
      * @param {Player} overridePlayer Overrides with a player, if overriden with a player who recently had a turn, they'll have an extra turn
      */
-    nextTurn(overridePlayer: Player) {
+    nextTurn(overridePlayer?: Player) {
         // override player makes player have an extra turn
         if (overridePlayer === undefined || overridePlayer === null) {
             let index =

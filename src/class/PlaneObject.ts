@@ -132,7 +132,7 @@ export class PlaneObject extends EventEmitter {
      * Step 1 closer to the target.
      * @param {PlaneObject} target Override target (Switches to another target globally)
      */
-    step(target: PlaneObject) {
+    step(target?: PlaneObject) {
         target = target === undefined ? this.ai.target : target;
         if (!this.isAi()) return new TypeError(`${this.id} is not an AI.`);
         if (!this.ai.running) return new Error('AI has not been started.');
