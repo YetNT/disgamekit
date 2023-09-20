@@ -1,6 +1,6 @@
 <h1 align="center"> disgamekit </h1>
 <p align="center">
-<img alt="Static Badge" src="https://img.shields.io/badge/version-2.0.0-baige">
+<img alt="Static Badge" src="https://img.shields.io/badge/version-2.1.1-baige">
 </p>
 
 A small package that will help making ts/js discord bot mini games way easier!
@@ -24,12 +24,13 @@ npm i disgamekit
 -   -   [Methods](#methods-1)
 -   [PlaneObject Class](#planeobject-class)
 -   -   [Constructor](#constructor-2)
+-   -   [Methods](#methods-2)
 -   -   [Events](#events-1)
 -   -   [Example (plane + planeobject)](#exmaple-use-plane--planeobject)
 -   [All classes exmaple](#example-discordjs)
 -   [Turns Class](#turns-class)
 -   -   [Constructor](#constructor-3)
--   -   [Methods](#methods-2)
+-   -   [Methods](#methods-3)
 -   [Player Class (Turns)](#player-class)
 -   -   [Constructor](#constructor-4)
 
@@ -270,12 +271,64 @@ The PlaneObject class represents an object that can be placed on the Plane. It e
 -   `id`: A unique identifier for the object.
 -   `value`:**(optional)** The emoji or value to display on the plane for said object. Defaults to the object's ID.
 -   `detectCollision`:**(optional)** Whether to detect collisions with other objects. Defaults to `true`
+-   `ai`: **(optional)** Enable Auto-Movement
 
 ```js
 const { Plane, PlaneObject } = require('disgamekit');
 
 let plane = new Plane(...)
 let hat = new PlaneObject(plane, 0, 0, 'hat', '🧢');
+```
+
+### Methods
+
+#### `isAi`
+
+Check if current PlaneObject is an AI
+
+```js
+const { Plane, PlaneObject } = require('disgamekit');
+
+let plane = new Plane(...)
+let hat = new PlaneObject(plane, 0, 0, 'hat', '🧢', false, true);
+
+hat.isAi() // true
+```
+
+#### `start`
+
+Start tracking specified target
+
+##### Parameters
+
+-   `target`: another PlaneObject to target
+
+```js
+let apple = new PlaneObject(plane, 5, 5, 'apple', 'a');
+
+hat.start(apple);
+```
+
+#### `step`
+
+Step 1 grid space closer to the target
+
+##### Parameters
+
+-   `target`: **(optional)** Override current target with new target
+
+```js
+hat.step(); // since it's tracking apple at (5, 5), hat will go to (1, 1)
+```
+
+#### `stop`
+
+Stop running the AI
+
+```js
+hat.stop();
+
+hat.step(); // AI has not been started!
 ```
 
 ### Events
