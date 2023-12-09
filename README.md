@@ -1,6 +1,6 @@
 <h1 align="center"> disgamekit </h1>
 <p align="center">
-<img alt="Static Badge" src="https://img.shields.io/badge/version-2.1.2-baige">
+<img alt="Static Badge" src="https://img.shields.io/badge/version-2.2.0-baige">
 </p>
 
 A small package that will help making ts/js discord bot mini games way easier!
@@ -27,12 +27,15 @@ npm i disgamekit
 -   -   [Methods](#methods-2)
 -   -   [Events](#events-1)
 -   -   [Example (plane + planeobject)](#exmaple-use-plane--planeobject)
--   [All classes exmaple](#example-discordjs)
--   [Turns Class](#turns-class)
+-   [ComplexPlaneObject](#complexplaneobject-class)
 -   -   [Constructor](#constructor-3)
 -   -   [Methods](#methods-3)
--   [Player Class (Turns)](#player-class)
+-   [All classes exmaple](#example-discordjs)
+-   [Turns Class](#turns-class)
 -   -   [Constructor](#constructor-4)
+-   -   [Methods](#methods-4)
+-   [Player Class (Turns)](#player-class)
+-   -   [Constructor](#constructor-5)
 
 ## Game Class
 
@@ -580,6 +583,58 @@ The game emits events for "start", "end", and "collision", which can be handled 
 The `update` function is a helper function that updates the game state and updates the message with the new state and buttons.
 
 **NOTE** - The code above is set up in a way that every user plays the same game . To avoid this either initialize the variables in the message create or use a map.
+
+## ComplexPlaneObject Class
+
+Like the PlaneObject (without collision or AI), but can span multiple pixels on the plane.
+Currently can create a line from point A to B.
+
+### Constructor
+
+#### Parameters
+
+-   `plane`: Pass the plane associated with this object, like the PlaneObject
+
+```js
+const { ComplexPlaneObject, Plane } = require('disgamekit');
+
+const plane = new Plane(/** Plane stuff**/);
+const obj1 = new ComplexPlaneObject(plane);
+```
+
+### Methods
+
+#### `draw`
+
+Draw a line or multiples with one object.
+
+##### Parameters
+
+-   `...input`: Numerous Objects to be added. (Rest parameter)
+
+```js
+obj1.draw(
+    {
+        value: /* Emoji to display for the line*/,
+        path: /* Path the line should take.*/
+    },
+    {
+        value: ":apple:",
+        path: "0, 0 -> 7, 8" // (x1, y1 -> y1, y2)
+    }
+)
+```
+
+#### `return`
+
+Return an array of PlaneObjects that represent the line.
+
+```js
+const plane = new Plane(/** plane stuff */);
+const obj1 = new ComplexPlaneObject(plane);
+
+plane.update(...obj1.return()); // used a rest parameter because array.
+```
 
 ## Turns Class
 
