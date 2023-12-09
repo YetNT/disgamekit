@@ -1,6 +1,6 @@
 {
     "name": "disgamekit",
-    "version": "2.1.2",
+    "version": "2.2.0",
     "description": "A small package that will help making ts/js discord bot mini games way easier!",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
